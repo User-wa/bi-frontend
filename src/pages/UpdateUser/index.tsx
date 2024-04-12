@@ -6,8 +6,7 @@ import {
   updateMyUserUsingPOST,
 } from "@/services/yubi/userController";
 import {uploadFileUsingPOST} from "@/services/yubi/fileController";
-
-
+import { useModel } from '@@/exports';
 
 // 处理头像上传
 const beforeUpload = (file: any) => {
@@ -24,10 +23,18 @@ const beforeUpload = (file: any) => {
 
 const UpdateUser: React.FC = () => {
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState<API.LoginUserVO | null>(null);
   const [form] = Form.useForm();
-  // const [avatarUrl, setAvatarUrl] = useState<string>();
-  const [userAvatar, setUserAvatar] = useState<string>(""); // 初始化用户头像 URL
+  const { initialState, setInitialState } = useModel('@@initialState');
+  const { currentUser: user } = initialState || {};
+
+  const setUser = (updateUser: API.LoginUserVO | undefined) => {
+    setInitialState({
+      currentUser: {
+        ...user,
+        ...updateUser
+      }
+    })
+  }
 
   useEffect(() => {
     const fetchUser = async () => {
