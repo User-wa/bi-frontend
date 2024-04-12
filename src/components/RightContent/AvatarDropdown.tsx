@@ -8,6 +8,8 @@ import React, { useCallback } from 'react';
 import { flushSync } from 'react-dom';
 import HeaderDropdown from '../HeaderDropdown';
 
+
+
 export type GlobalHeaderRightProps = {
   menu?: boolean;
   children?: React.ReactNode;
