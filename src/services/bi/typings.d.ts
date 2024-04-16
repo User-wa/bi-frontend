@@ -4,21 +4,15 @@ declare namespace API {
     name?: string;
   };
 
-  type BaseResponseyubiResponse_ = {
+  type BaseResponseBiModelVO_ = {
     code?: number;
-    data?: yubiResponse;
+    data?: BiModelVO;
     message?: string;
   };
 
   type BaseResponseBoolean_ = {
     code?: number;
     data?: boolean;
-    message?: string;
-  };
-
-  type BaseResponseChart_ = {
-    code?: number;
-    data?: Chart;
     message?: string;
   };
 
@@ -40,9 +34,9 @@ declare namespace API {
     message?: string;
   };
 
-  type BaseResponsePageChart_ = {
+  type BaseResponsePageChartVO_ = {
     code?: number;
-    data?: PageChart_;
+    data?: PageChartVO_;
     message?: string;
   };
 
@@ -88,52 +82,28 @@ declare namespace API {
     message?: string;
   };
 
-  type yubiResponse = {
-    id?: number;
+  type BiModelVO = {
     getChart?: string;
     getResult?: string;
-  };
-
-  type Chart = {
-    chartData?: string;
-    chartType?: string;
-    createTime?: string;
-    execMessage?: string;
-    getChart?: string;
-    getResult?: string;
-    target?: string;
     id?: number;
-    isDelete?: number;
-    name?: string;
-    status?: string;
-    updateTime?: string;
-    userId?: number;
   };
 
   type ChartAddRequest = {
     chartData?: string;
     chartType?: string;
-    target?: string;
     name?: string;
-  };
-
-  type ChartEditRequest = {
-    chartData?: string;
-    chartType?: string;
     target?: string;
-    id?: number;
-    name?: string;
   };
 
   type ChartQueryRequest = {
     chartType?: string;
     current?: number;
-    target?: string;
     id?: number;
     name?: string;
     pageSize?: number;
     sortField?: string;
     sortOrder?: string;
+    target?: string;
     userId?: number;
   };
 
@@ -143,38 +113,49 @@ declare namespace API {
     createTime?: string;
     getChart?: string;
     getResult?: string;
-    target?: string;
     id?: number;
     isDelete?: number;
     name?: string;
+    target?: string;
     updateTime?: string;
+    userId?: number;
+  };
+
+  type ChartVO = {
+    chartData?: string;
+    chartType?: string;
+    createTime?: string;
+    getChart?: string;
+    getResult?: string;
+    id?: number;
+    isDelete?: number;
+    name?: string;
+    status?: string;
+    target?: string;
+    updateTime?: string;
+    userId?: number;
   };
 
   type DeleteRequest = {
     id?: number;
   };
 
-  type genChartByAiAsyncMqUsingPOSTParams = {
+  type genChartByAiAsyncQueueUsingPOSTParams = {
     chartType?: string;
-    target?: string;
     name?: string;
+    target?: string;
   };
 
   type genChartByAiAsyncUsingPOSTParams = {
     chartType?: string;
-    target?: string;
     name?: string;
+    target?: string;
   };
 
-  type genChartByAiUsingPOSTParams = {
+  type genChartByAiSyncUsingPOSTParams = {
     chartType?: string;
-    target?: string;
     name?: string;
-  };
-
-  type genChartByIdUsingGETParams = {
-    /** id */
-    id?: number;
+    target?: string;
   };
 
   type getPostVOByIdUsingGETParams = {
@@ -207,14 +188,14 @@ declare namespace API {
     column?: string;
   };
 
-  type PageChart_ = {
+  type PageChartVO_ = {
     countId?: string;
     current?: number;
     maxLimit?: number;
     optimizeCountSql?: boolean;
     orders?: OrderItem[];
     pages?: number;
-    records?: Chart[];
+    records?: ChartVO[];
     searchCount?: boolean;
     size?: number;
     total?: number;
@@ -328,7 +309,7 @@ declare namespace API {
   };
 
   type uploadFileUsingPOSTParams = {
-    yubiz?: string;
+    biz?: string;
   };
 
   type User = {
@@ -340,6 +321,7 @@ declare namespace API {
     userAvatar?: string;
     userName?: string;
     userPassword?: string;
+    userProfile?: string;
     userRole?: string;
   };
 
@@ -366,7 +348,6 @@ declare namespace API {
     userName?: string;
     userProfile?: string;
     userRole?: string;
-    userAccount?: string;
   };
 
   type UserRegisterRequest = {
@@ -387,7 +368,6 @@ declare namespace API {
     userName?: string;
     userProfile?: string;
     userRole?: string;
-    userAccount?: string;
   };
 
   type UserVO = {

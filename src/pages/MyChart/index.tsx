@@ -1,13 +1,9 @@
-import {deleteChartUsingPOST, listMyChartByPageUsingPOST} from '@/services/yubi/chartController';
-
-import { useModel } from '@@/exports';
+import {history, useModel} from '@@/exports';
 import {Avatar, Card, List, message, Result} from 'antd';
 import ReactECharts from 'echarts-for-react';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Search from "antd/es/input/Search";
-
-
-import {QuestionCircleOutlined} from '@ant-design/icons';
+import {deleteChartUsingPOST, listMyChartByPageUsingPOST} from '@/services/yubi/chartController';import {QuestionCircleOutlined} from '@ant-design/icons';
 import {Button, Popconfirm} from 'antd';
 
 /**
@@ -22,12 +18,13 @@ const MyChartPage: React.FC = () => {
     sortOrder: 'desc',
   };
 
-  const [searchParams, setSearchParams] = useState<API.ChartQueryRequest>({ ...initSearchParams });
-  const { initialState } = useModel('@@initialState');
-  const { currentUser } = initialState ?? {};
+  const [searchParams, setSearchParams] = useState<API.ChartQueryRequest>({...initSearchParams});
+  const {initialState} = useModel('@@initialState');
+  const {currentUser} = initialState ?? {};
   const [chartList, setChartList] = useState<API.Chart[]>();
   const [total, setTotal] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
+
 
   const loadData = async () => {
     setLoading(true);
@@ -39,6 +36,20 @@ const MyChartPage: React.FC = () => {
         // 隐藏图表的 title
         if (res.data.records) {
           res.data.records.forEach(data => {
+        //     if (data.status === 'failed' || data.status === 'resSend') {
+        //       reSendChatGptUsingPost(data.id ?? -1);
+        //       return;
+        //     }
+        //     try {
+        //       data.getChart && JSON.parse(data.getChart)
+        //     } catch (e: any) {
+        //       if (data.number !== 3) {
+        //         data.getChart = '{}';
+        //         reSendChatGptUsingPost(data.id ?? -1);
+        //         return;
+        //       }
+        //       data.getChart = '{}';
+        //     }
             if (data.status === 'succeed') {
               const chartOption = JSON.parse(data.getChart ?? '{}');
               chartOption.title = undefined;
@@ -50,7 +61,7 @@ const MyChartPage: React.FC = () => {
         message.error('获取我的图表失败');
       }
     } catch (e: any) {
-      message.error('获取我的图表失败，' + e.message);
+      message.error('获取我的图表失败，');
     }
     setLoading(false);
   };
@@ -70,7 +81,7 @@ const MyChartPage: React.FC = () => {
           })
         }}/>
       </div>
-      <div className="margin-16" />
+      <div className="margin-16"/>
       <List
         grid={{
           gutter: 16,
@@ -97,19 +108,28 @@ const MyChartPage: React.FC = () => {
         dataSource={chartList}
         renderItem={(item) => (
           <List.Item key={item.id}>
-            <Card style={{ width: '100%' }}>
+            <Card style={{width: '100%'}}>
               <List.Item.Meta
-                avatar={<Avatar src={currentUser && currentUser.userAvatar} />}
+                avatar={<Avatar src={currentUser && currentUser.userAvatar}/>}
                 title={item.name}
                 description={item.chartType ? '图表类型：' + item.chartType : undefined}
               />
               <>
                 {
+                  item.getChart === '{}' && item.status !== 'noSuccess' && item.status !== 'lengthMax' && <>
+                    <Result
+                      status="info"
+                      title="AI 生成图表错误,修改中请稍后查看"
+                      subTitle={item.execMessage}
+                    />
+                  </>
+                }
+                {
                   item.status === 'wait' && <>
                     <Result
-                      status="warning"
+                      status="info"
                       title="待生成"
-                      subTitle={item.execMessage ?? '当前图表生成队列繁忙，请耐心等候'}
+                      subTitle={item.execMessage ?? '正在准备生成图表，请耐心等候'}
                     />
                   </>
                 }
@@ -123,12 +143,12 @@ const MyChartPage: React.FC = () => {
                   </>
                 }
                 {
-                  item.status === 'succeed' && <>
-                    <div style={{ marginBottom: 16 }} />
+                  item.status === 'succeed' && item.getChart !== '{}' && <>
+                    <div style={{marginBottom: 16}}/>
                     <p>{'分析目标：' + item.target}</p>
-                    <div style={{ marginBottom: 16 }} />
-                    <ReactECharts option={item.getChart && JSON.parse(item.getChart)} />
-                    <p>{'结论：' + item.getResult}</p>
+                    <p>{'分析结论：' + item.getResult}</p>
+                    <ReactECharts option={item.getChart && JSON.parse(item.getChart)}/>
+                    <div style={{marginBottom: 16}}/>
                   </>
                 }
                 {
@@ -140,6 +160,31 @@ const MyChartPage: React.FC = () => {
                     />
                   </>
                 }
+                {/*{*/}
+                {/*  item.status === 'noSuccess' && item.status === 'noSuccess' && <>*/}
+                {/*    <Result*/}
+                {/*      status="error"*/}
+                {/*      title="重试次数达上限,请重新尝试或删除"*/}
+                {/*      subTitle={'重试次数达上限,请重新尝试或删除' + item.number}*/}
+                {/*    />*/}
+                {/*  </>*/}
+                {/*}*/}
+                {
+                  item.status === 'lengthMax'&& <>
+                    <Result
+                      status="error"
+                      title="数据过多请缩减后重试"
+                    />
+                  </>
+                }
+                {
+                  item.status === 'resSend'&& <>
+                    <Result
+                      status="error"
+                      title="访问ChatGPT时出现了一些问题正在重试中"
+                    />
+                  </>
+                }
               </>
               <Popconfirm
                 title="删除图表"
@@ -148,9 +193,12 @@ const MyChartPage: React.FC = () => {
                   const deleteRequest = {
                     id: item.id ?? -1
                   };
-                  deleteChartUsingPOST(deleteRequest);
-                  loadData();
-                  message.success('删除成功!')
+                  const handleDeleteAndLoadData = async () => {
+                    await deleteChartUsingPOST(deleteRequest);
+                    message.success('删除成功!');
+                    loadData();
+                  };
+                  handleDeleteAndLoadData();
                 }}
                 icon={<QuestionCircleOutlined style={{color: 'pink'}}/>}
               >

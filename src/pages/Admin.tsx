@@ -1,44 +1,50 @@
-import { HeartTwoTone, SmileTwoTone } from '@ant-design/icons';
-import { PageContainer } from '@ant-design/pro-components';
-import '@umijs/max';
-import { Alert, Card, Typography } from 'antd';
-import React from 'react';
-const Admin: React.FC = () => {
+// admin.tsx
+
+import React, { useState } from 'react';
+import { Table, Button, Modal } from 'antd';
+
+const Admin = () => {
+  const [users, setUsers] = useState([
+    { id: 1, name: 'Alice', email: 'alice@example.com', role: 'Admin' },
+    { id: 2, name: 'Bob', email: 'bob@example.com', role: 'User' },
+    // Add more user data as needed
+  ]);
+
+  const columns = [
+    { title: 'ID', dataIndex: 'id', key: 'id' },
+    { title: 'Name', dataIndex: 'name', key: 'name' },
+    { title: 'Email', dataIndex: 'email', key: 'email' },
+    { title: 'Role', dataIndex: 'role', key: 'role' },
+    {
+      title: 'Action',
+      key: 'action',
+      render: (text, record) => (
+        <Button onClick={() => handleEdit(record)}>Edit</Button>
+      ),
+    },
+  ];
+
+  const handleEdit = (user) => {
+    // Handle edit user logic
+    Modal.info({
+      title: 'Edit User',
+      content: (
+        <div>
+          <p>Name: {user.name}</p>
+          <p>Email: {user.email}</p>
+          <p>Role: {user.role}</p>
+          {/* Add more user details here */}
+        </div>
+      ),
+    });
+  };
+
   return (
-    <PageContainer content={' 这个页面只有 admin 权限才能查看'}>
-      <Card>
-        <Alert
-          message={'更快更强的重型组件，已经发布。'}
-          type="success"
-          showIcon
-          banner
-          style={{
-            margin: -12,
-            marginBottom: 48,
-          }}
-        />
-        <Typography.Title
-          level={2}
-          style={{
-            textAlign: 'center',
-          }}
-        >
-          <SmileTwoTone /> 鱼智能 yubi <HeartTwoTone twoToneColor="#eb2f96" /> You
-        </Typography.Title>
-      </Card>
-      <p
-        style={{
-          textAlign: 'center',
-          marginTop: 24,
-        }}
-      >
-        Want to add more pages? Please refer to{' '}
-        <a href="https://pro.ant.design/docs/block-cn" target="_blank" rel="noopener noreferrer">
-          use block
-        </a>
-        。
-      </p>
-    </PageContainer>
+    <div>
+      <h1>User Management</h1>
+      <Table dataSource={users} columns={columns} />
+    </div>
   );
 };
+
 export default Admin;

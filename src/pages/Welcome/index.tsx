@@ -1,49 +1,87 @@
 import {Button, Card, Form, message, Space} from 'antd';
 import ReactECharts from "echarts-for-react";
-// import {loginSingInUsingPost} from "@/services/yubi/chartController";
-// import React, {useEffect, useState} from 'react';
-// import {getLoginUserUsingGet} from "@/services/yubi/userController";
+// import {loginSingInUsingPost} from "@/services/bi/scoreController";
+import React, {useEffect, useState} from 'react';
+import {getLoginUserUsingGet} from "@/services/bi/userController";
+import {addScoreUsingPost, findScoreUsingPost} from "@/services/bi/scoreController";
 
 /**
- * 我的图表页面
+ * 首页
  * @constructor
  */
-const Welcome: React.FC = () => {
+const AddScore: React.FC = () => {
+
+  const [userData, setUserData] = useState<API.BaseResponseLoginUserVO_>();
+
+  const [userScore, setUserScore] = useState(0);
+  const [flag, setFlag] = useState(0);
+  // const [forceUpdate, setForceUpdate] = useState(false);
+
+
+
+
+  const getScore = async () => {
+    const deleteRequest = {
+      id: userData?.data?.id ?? -1
+    };
+
+    const res = await findScoreUsingPost(deleteRequest);
+    setUserScore(res.data ?? 0);
+    // setForceUpdate(prev => !prev); // 触发重新渲染
+  };
+
   /**
    * 签到
    */
-  // const fetchUserInfo = async () => {
-  //   const res = await loginSingInUsingPost(userData?.data?.id ?? -1);
-  //   if (res.code !== 0) {
-  //     message.error(res.message);
-  //     return;
-  //   }
-  //   message.success('签到成功');
-  //   fetchData();
-  // };
-  //
-  // const [userData, setUserData] = useState<API.BaseResponseLoginUserVO_>();
-  // const fetchData = async () => {
-  //   try {
-  //     const [userRes] = await Promise.all([
-  //       getLoginUserUsingGet()
-  //     ]);
-  //     if (userRes.data) {
-  //       setUserData(userRes);
-  //     } else {
-  //       message.error(userRes.message);
-  //     }
-  //   } catch (e) {
-  //     message.error('获取信息失败');
-  //   }
-  // };
-  // useEffect(() => {
-  //   fetchData();
-  // }, []);
+  const fetchUserInfo = async () => {
+    const deleteRequest = {
+      id: userData?.data?.id ?? -1
+    };
+    const res = await addScoreUsingPost(deleteRequest);
+    if (res.code) {
+      message.error(res.message);
+      return;
+    }
+    message.success('签到成功');
+    getScore();
+    fetchData();
+  };
+
+
+  const fetchData = async () => {
+    try {
+      const [userRes] = await Promise.all([
+        getLoginUserUsingGet()
+      ]);
+      if (userRes.data) {
+        setUserData(userRes);
+        setFlag(1);
+      } else {
+        message.error(userRes.message);
+      }
+    } catch (e) {
+      message.error('获取信息失败');
+    }
+  };
+
+
+  useEffect(() => {
+      fetchData();
+  }, []); // 监听userData的变化
+
+  useEffect(() => {
+    if (flag === 1) {
+      getScore();
+    }
+  }, [flag]);
+
   return (
     <div>
-      <Card title="雀爱 BI,欢迎您！">
-        {/*<h2>用户: {useData?.data?.userName},当前积分：{userData?.data?.score}</h2>*/}
+      <Card title="智能 BI,欢迎签到">
+        <h2 style={{ fontSize: '16px', color: '#333', fontWeight: 'bold', marginBottom: '16px' }}>
+          用户: {userData?.data?.userName}
+          <span style={{ marginLeft: '20px', color: '#333', fontWeight: 'bold' }}>可用积分：{userScore}</span>
+        </h2>
         <Form name="addChart" labelAlign="left" labelCol={{span: 4}}
               wrapperCol={{span: 16}} initialValues={{}}>
           <Form.Item name="file" label={'样例'}>
@@ -99,16 +137,16 @@ const Welcome: React.FC = () => {
             <div style={{marginBottom: 16}}/>
           </Form.Item>
 
-          {/*<Form.Item wrapperCol={{span: 16, offset: 4}}>*/}
-          {/*  <Space>*/}
-          {/*    /!*<Button type="primary" htmlType="submit" onClick={fetchUserInfo}>*!/*/}
-          {/*    /!*  签到*!/*/}
-          {/*    /!*</Button>*!/*/}
-          {/*  </Space>*/}
-          {/*</Form.Item>*/}
+          <Form.Item wrapperCol={{span: 16, offset: 4}}>
+            <Space>
+              <Button type="primary" htmlType="submit" onClick={fetchUserInfo}>
+                签到
+              </Button>
+            </Space>
+          </Form.Item>
         </Form>
       </Card>
     </div>
   );
 };
-export default Welcome;
+export default AddScore;
