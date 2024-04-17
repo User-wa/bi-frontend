@@ -87,6 +87,9 @@ const AddChartAsync: React.FC = () => {
               <Button type="primary" htmlType="submit" loading={submitting} disabled={submitting}>
                 提交
               </Button>
+              <Button danger type="text">
+                (消耗一积分)
+                </Button>
               <Button htmlType="reset">重置</Button>
             </Space>
           </Form.Item>
