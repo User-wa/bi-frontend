@@ -16,7 +16,7 @@ const AddScore: React.FC = () => {
   const [userScore, setUserScore] = useState(0);
   const [flag, setFlag] = useState(0);
   // const [forceUpdate, setForceUpdate] = useState(false);
-
+  // const [dataLoaded, setDataLoaded] = useState(false);
 
 
 
@@ -27,6 +27,7 @@ const AddScore: React.FC = () => {
 
     const res = await findScoreUsingPost(deleteRequest);
     setUserScore(res.data ?? 0);
+    // setDataLoaded(true);
     // setForceUpdate(prev => !prev); // 触发重新渲染
   };
 
@@ -62,6 +63,7 @@ const AddScore: React.FC = () => {
     } catch (e) {
       message.error('获取信息失败');
     }
+
   };
 
 
@@ -77,11 +79,19 @@ const AddScore: React.FC = () => {
 
   return (
     <div>
-      <Card title="智能 BI,欢迎签到">
-        <h2 style={{ fontSize: '16px', color: '#333', fontWeight: 'bold', marginBottom: '16px' }}>
-          用户: {userData?.data?.userName}
-          <span style={{ marginLeft: '20px', color: '#333', fontWeight: 'bold' }}>可用积分：{userScore}</span>
-        </h2>
+      <Card
+        title="智能 BI,欢迎签到"
+        extra={
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: '14px', color: '#333', fontWeight: 'bold' }}>
+              用户: {userData?.data?.userName}
+            </span>
+            <span style={{ marginLeft: '16px', color: '#1890ff', fontWeight: 'bold' }}>
+              可用积分：{userScore}
+            </span>
+          </div>
+        }
+      >
         <Form name="addChart" labelAlign="left" labelCol={{span: 4}}
               wrapperCol={{span: 16}} initialValues={{}}>
           <Form.Item name="file" label={'样例'}>

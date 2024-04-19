@@ -345,6 +345,7 @@ declare namespace API {
     sortField?: string;
     sortOrder?: string;
     unionId?: string;
+    userAccount?: string;
     userName?: string;
     userProfile?: string;
     userRole?: string;
@@ -364,6 +365,7 @@ declare namespace API {
 
   type UserUpdateRequest = {
     id?: number;
+    userAccount?: string;
     userAvatar?: string;
     userName?: string;
     userProfile?: string;

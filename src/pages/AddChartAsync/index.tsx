@@ -4,6 +4,8 @@ import { Button, Card, Form, Input, message, Select, Space, Upload } from 'antd'
 import { useForm } from 'antd/es/form/Form';
 import TextArea from 'antd/es/input/TextArea';
 import React, { useState } from 'react';
+import {getLoginUserUsingGet} from "@/services/bi/userController";
+import {reduceScoreUsingPost} from "@/services/bi/scoreController";
 
 /**
  * 添加图表（异步）页面
@@ -35,6 +37,11 @@ const AddChartAsync: React.FC = () => {
         message.error('分析失败');
       } else {
         message.success('分析任务提交成功，稍后请在我的图表页面查看');
+        const res2 = await getLoginUserUsingGet();
+        const deleteRequest = {
+          id: res2.data.id ?? -1
+        };
+        reduceScoreUsingPost(deleteRequest);
         form.resetFields();
       }
     } catch (e: any) {

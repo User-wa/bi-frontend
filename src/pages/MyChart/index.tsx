@@ -1,11 +1,10 @@
 import {history, useModel} from '@@/exports';
 import {Avatar, Card, List, message, Result} from 'antd';
 import ReactECharts from 'echarts-for-react';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useReducer} from 'react';
 import Search from "antd/es/input/Search";
 import {deleteChartUsingPOST, listMyChartByPageUsingPOST} from '@/services/yubi/chartController';import {QuestionCircleOutlined} from '@ant-design/icons';
 import {Button, Popconfirm} from 'antd';
-
 /**
  * 我的图表页面
  * @constructor
@@ -18,16 +17,19 @@ const MyChartPage: React.FC = () => {
     sortOrder: 'desc',
   };
 
+  // 在组件中定义轮询间隔时间
   const [searchParams, setSearchParams] = useState<API.ChartQueryRequest>({...initSearchParams});
   const {initialState} = useModel('@@initialState');
   const {currentUser} = initialState ?? {};
   const [chartList, setChartList] = useState<API.Chart[]>();
   const [total, setTotal] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
+  // const [flag, setFlag] = useState<boolean>(false);
 
-
-  const loadData = async () => {
-    setLoading(true);
+  const loadData = async (flag: boolean) => {
+    if(flag){
+      setLoading(true);
+    }
     try {
       const res = await listMyChartByPageUsingPOST(searchParams);
       if (res.data) {
@@ -63,12 +65,55 @@ const MyChartPage: React.FC = () => {
     } catch (e: any) {
       message.error('获取我的图表失败，');
     }
-    setLoading(false);
+    if(flag){
+      setLoading(false);
+    }
   };
 
+
+  // useEffect(() => {
+  //
+  // }, [searchParams]);
+
+  // function reducer(state: any) {
+  //   switch (action.type) {
+  //     case 'FETCH_DATA':
+  //       // 在reducer中调用loadData函数
+  //       loadData();
+  //       return state;
+  //     default:
+  //       return state;
+  //   }
+  // };
+
+  // function reducer(state: { count: number })
+  // state: { count: number }
+  // 表示一个对象，其中包含一个名为 count 的属性，其类型为 number
+  //轮询：参考https://segmentfault.com/a/1190000041831958#item-1
+
+  // 定义一个reducer函数，接受一个状态对象作为参数
+  function reducer(state: any) {
+    // setFlag(false); // 这里注释掉了设置flag为false的逻辑
+    loadData(false); // 调用loadData函数并传入false作为参数
+    return state; // 返回状态对象
+  }
+
+// 使用useReducer Hook，传入reducer函数和初始状态对象{}，返回状态和dispatch函数
+  const [state, dispatch] = useReducer(reducer, {});
+
+// useEffect Hook，当searchParams发生变化时执行
   useEffect(() => {
-    loadData();
+    // 调用loadData函数并传入true作为参数
+    loadData(true);
   }, [searchParams]);
+
+// useEffect Hook，组件挂载时执行
+  useEffect(() => {
+    // 每隔5秒调用一次dispatch函数
+    setInterval(() => {
+      dispatch();
+    }, 5000);
+  }, []);
 
   return (
     <div className="my-chart-page">
@@ -196,7 +241,7 @@ const MyChartPage: React.FC = () => {
                   const handleDeleteAndLoadData = async () => {
                     await deleteChartUsingPOST(deleteRequest);
                     message.success('删除成功!');
-                    loadData();
+                    loadData(true);
                   };
                   handleDeleteAndLoadData();
                 }}

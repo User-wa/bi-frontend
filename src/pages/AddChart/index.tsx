@@ -2,8 +2,11 @@ import { genChartByAiUsingPOST } from '@/services/yubi/chartController';
 import { UploadOutlined } from '@ant-design/icons';
 import {Button, Card, Col, Divider, Form, Input, message, Row, Select, Space, Spin, Upload} from 'antd';
 import TextArea from 'antd/es/input/TextArea';
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import ReactECharts from 'echarts-for-react';
+import {reduceScoreUsingPost} from "@/services/bi/scoreController";
+import {getLoginUserUsingGet} from "@/services/bi/userController";
+// import {userScoreUsingPost} from "@/services/bi/scoreController";
 
 /**
  * 添加图表页面
@@ -37,6 +40,11 @@ const AddChart: React.FC = () => {
         message.error('分析失败');
       } else {
         message.success('分析成功');
+        const res2 = await getLoginUserUsingGet();
+        const deleteRequest = {
+          id: res2.data.id ?? -1
+        };
+        reduceScoreUsingPost(deleteRequest);
         const chartOption = JSON.parse(res.data.getChart ?? '');
         if (!chartOption) {
           throw new Error('图表代码解析错误')
@@ -51,12 +59,14 @@ const AddChart: React.FC = () => {
     setSubmitting(false);
   };
 
+
+
   return (
     <div className="add-chart">
       <Row gutter={24}>
         <Col span={12}>
           <Card title="智能分析">
-            <Form name="addChart" labelAlign="left" labelCol={{ span: 4 }}
+            <Form name="addChart" labelAlign="left" labelCol={{ span: 5 }}
                   wrapperCol={{ span: 16 }} onFinish={onFinish} initialValues={{}}>
               <Form.Item
                 name="target"
