@@ -19,8 +19,22 @@
     routes: [
       { path: '/admin', redirect: '/admin/user' },
       { icon: 'table', path: '/admin/user', component: './Admin/User', name: '用户管理' },
+      {path:'/admin',redirect:'/admin/notification'},
+      {
+        icon: 'table',
+        path: '/admin/notification',
+        component: './Admin/Notification',
+        name: '动态公告管理',
+      },
     ],
   },
+//   {
+//     path:'/admin',
+//     icon:'crown',
+//     name:'动态公告管理页',
+//     access:'canAdmin',
+//
+// },
   { path: '/', redirect: '/welcome' },
   { path: '*', layout: false, component: './404' },
 ];

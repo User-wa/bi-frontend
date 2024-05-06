@@ -373,6 +373,10 @@ declare namespace API {
     checkPassword?: string;
     userAccount?: string;
     userPassword?: string;
+    email?: string;
+  };
+  type EmailRequest = {
+    email?: string;
   };
 
   type UserUpdateMyRequest = {

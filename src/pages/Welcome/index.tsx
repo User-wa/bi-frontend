@@ -1,22 +1,28 @@
-import {Button, Card, Form, message, Space} from 'antd';
+import {Button, Card, Form, message, Space ,notification} from 'antd';
 import ReactECharts from "echarts-for-react";
 // import {loginSingInUsingPost} from "@/services/bi/scoreController";
 import React, {useEffect, useState} from 'react';
 import {getLoginUserUsingGet} from "@/services/bi/userController";
 import {addScoreUsingPost, findScoreUsingPost} from "@/services/bi/scoreController";
+import {getNotificationVoUsingGet} from "@/services/bi/notificationController";
+// import { useModel } from 'umi';
+// import { Helmet } from 'umi';
+// import headScripts from "umi-plugin-react/src/plugins/headScripts";
 
 /**
  * 首页
  * @constructor
  */
+
 const AddScore: React.FC = () => {
 
   const [userData, setUserData] = useState<API.BaseResponseLoginUserVO_>();
-
+  const [api, contextHolder] = notification.useNotification();
   const [userScore, setUserScore] = useState(0);
   const [flag, setFlag] = useState(0);
   // const [forceUpdate, setForceUpdate] = useState(false);
   // const [dataLoaded, setDataLoaded] = useState(false);
+
 
 
 
@@ -48,7 +54,45 @@ const AddScore: React.FC = () => {
     fetchData();
   };
 
-
+  const close = () => {
+    console.log(
+      'Notification was closed. Either the close button was clicked or duration time elapsed.',
+    );
+  };
+  const fetchNotification = async (domain : string)=> {
+    // 发起请求获取通知信息的逻辑
+    const res = await getNotificationVoUsingGet({ domain });
+    const data = res.data;
+    const id = data.id;
+    const updateTime = data.updateTime;
+        if (
+          !localStorage.getItem(id + updateTime) &&
+          data.title &&
+          data.content
+        ) {
+        //   // 使用 SweetAlert2 显示弹窗
+          const key = `hallo`;
+          const btn = (
+            <Space>
+              {/* 这里移除了 Destroy All 按钮的 onClick 处理函数 */}
+              <Button type="primary" size="small" onClick={() => api.destroy(key)}>
+                Confirm
+              </Button>
+            </Space>
+          );
+          api.open({
+            duration: null,
+            message: data.title,
+            description: data.content,
+            btn,
+            key,
+            onClose: close,
+          });
+        //
+          // 存储到 localStorage
+          localStorage.setItem(id + updateTime, "id");
+        }
+  }
   const fetchData = async () => {
     try {
       const [userRes] = await Promise.all([
@@ -67,9 +111,26 @@ const AddScore: React.FC = () => {
   };
 
 
+
+
   useEffect(() => {
       fetchData();
   }, []); // 监听userData的变化
+
+  useEffect(() => {
+      const script = document.createElement('script');
+      script.src = 'https://bi-1317055661.cos.ap-nanjing.myqcloud.com/index-C9L-oNdE.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    // 在这里根据条件来决定何时加载目标脚本
+    // 可以在组件挂载完成后加载脚本，或者在特定事件触发时加载
+  },[]);
+
+  // useEffect(() => {
+  //   const url = new URL(location.href);
+  //   const domain = url.hostname;
+  //   fetchNotification(domain);
+  // }, []); // 监听userData的变化
 
   useEffect(() => {
     if (flag === 1) {
@@ -77,8 +138,15 @@ const AddScore: React.FC = () => {
     }
   }, [flag]);
 
+  // useEffect(() => {
+  //   // 在这里根据条件来决定何时加载目标脚本
+  //   loadScript();
+  //   // 可以在组件挂载完成后加载脚本，或者在特定事件触发时加载
+  // }, []);
+
   return (
     <div>
+
       <Card
         title="智能 BI,欢迎签到"
         extra={
@@ -98,6 +166,7 @@ const AddScore: React.FC = () => {
             <div style={{marginBottom: 16}}/>
             <p>{'分析目标：网站用户增长趋势'}</p>
             <p>{'分析结论：根据折线图数据分析结论：从1号到60号，网站用户数呈现逐渐增长的趋势，但在35号和47号出现了异常数据，用户数分别为3和5，可能是数据采集或记录错误导致的异常值。整体来看，网站用户数呈现出稳步增长的态势，需要进一步关注和分析异常值的原因，以确保数据的准确性和可靠性'}</p>
+            {contextHolder}
             <ReactECharts option={
               {
                 "title": {

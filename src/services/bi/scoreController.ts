@@ -29,8 +29,11 @@ export async function findScoreUsingPost(
   });
 }
 
-/** useScore POST /api/user/score/use */
-export async function reduceScoreUsingPost(body: API.DeleteRequest, options?: { [key: string]: any }) {
+/** reduceScore POST /api/user/score/use */
+export async function reduceScoreUsingPost(
+  body: API.DeleteRequest,
+  options?: { [key: string]: any },
+) {
   return request<API.BaseResponseBoolean_>('/api/user/score/use', {
     method: 'POST',
     headers: {

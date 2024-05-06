@@ -135,6 +135,21 @@ export async function userRegisterUsingPOST(
   });
 }
 
+/** userRegister POST /api/user/register */
+export async function userEmailUsingPOST(
+  body: API.EmailRequest,
+  options?: { [key: string]: any },
+) {
+  return request<API.BaseResponseLong_>('/api/email', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
 /** Welcome POST /api/user/update */
 export async function updateUserUsingPOST(
   body: API.UserUpdateRequest,

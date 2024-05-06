@@ -58,8 +58,25 @@ const AddChart: React.FC = () => {
     }
     setSubmitting(false);
   };
+  // const MyNamespace = {
+  //   Zo: undefined
+  // };
 
-
+// 在命名空间下声明变量或函数
+//   MyNamespace.Zo = function() {const script = document.createElement('script');
+//     script.src = 'https://bi-1317055661.cos.ap-nanjing.myqcloud.com/index-DCcypd_U.js';
+//     script.defer = true;
+//     document.head.appendChild(script); };
+//   useEffect(() => {
+//     // 当组件加载完成后，创建和加载脚本
+//
+//
+//     // 延迟加载脚本（如果需要的话），或者直接调用 loadScript
+//     // loadScript(); // 如果你不需要延迟，可以直接调用
+//
+//     // 延迟加载脚本的示例setTimeout(loadScript, 500); // 假设延迟500毫秒加载脚本
+//
+//   }, []);
 
   return (
     <div className="add-chart">

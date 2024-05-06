@@ -22,6 +22,12 @@ declare namespace API {
     message?: string;
   };
 
+  type BaseResponseListRecordVO_ = {
+    code?: number;
+    data?: RecordVO[];
+    message?: string;
+  };
+
   type BaseResponseLoginUserVO_ = {
     code?: number;
     data?: LoginUserVO;
@@ -34,15 +40,33 @@ declare namespace API {
     message?: string;
   };
 
+  type BaseResponseNotificationVO_ = {
+    code?: number;
+    data?: NotificationVO;
+    message?: string;
+  };
+
   type BaseResponsePageChartVO_ = {
     code?: number;
     data?: PageChartVO_;
     message?: string;
   };
 
+  type BaseResponsePageNotification_ = {
+    code?: number;
+    data?: PageNotification_;
+    message?: string;
+  };
+
   type BaseResponsePagePostVO_ = {
     code?: number;
     data?: PagePostVO_;
+    message?: string;
+  };
+
+  type BaseResponsePageRecord_ = {
+    code?: number;
+    data?: PageRecord_;
     message?: string;
   };
 
@@ -158,6 +182,19 @@ declare namespace API {
     target?: string;
   };
 
+  type getEmailUsingPOSTParams = {
+    current?: number;
+    email?: string;
+    pageSize?: number;
+    sortField?: string;
+    sortOrder?: string;
+  };
+
+  type getNotificationVOUsingGETParams = {
+    /** domain */
+    domain: string;
+  };
+
   type getPostVOByIdUsingGETParams = {
     /** id */
     id?: number;
@@ -183,6 +220,60 @@ declare namespace API {
     userRole?: string;
   };
 
+  type Notification = {
+    content?: string;
+    createTime?: string;
+    domain?: string;
+    endTime?: string;
+    id?: number;
+    isDelete?: number;
+    startTime?: string;
+    status?: number;
+    title?: string;
+    updateTime?: string;
+    userId?: number;
+  };
+
+  type NotificationAddRequest = {
+    content?: string;
+    domain?: string[];
+    endTime?: string;
+    startTime?: string;
+    status?: number;
+    title?: string;
+  };
+
+  type NotificationQueryRequest = {
+    content?: string;
+    current?: number;
+    domain?: string[];
+    endTime?: string;
+    id?: number;
+    pageSize?: number;
+    sortField?: string;
+    sortOrder?: string;
+    startTime?: string;
+    status?: number;
+    title?: string;
+  };
+
+  type NotificationUpdateRequest = {
+    content?: string;
+    domain?: string[];
+    endTime?: string;
+    id?: number;
+    startTime?: string;
+    status?: number;
+    title?: string;
+  };
+
+  type NotificationVO = {
+    content?: string;
+    id?: number;
+    title?: string;
+    updateTime?: string;
+  };
+
   type OrderItem = {
     asc?: boolean;
     column?: string;
@@ -201,6 +292,19 @@ declare namespace API {
     total?: number;
   };
 
+  type PageNotification_ = {
+    countId?: string;
+    current?: number;
+    maxLimit?: number;
+    optimizeCountSql?: boolean;
+    orders?: OrderItem[];
+    pages?: number;
+    records?: Notification[];
+    searchCount?: boolean;
+    size?: number;
+    total?: number;
+  };
+
   type PagePostVO_ = {
     countId?: string;
     current?: number;
@@ -209,6 +313,19 @@ declare namespace API {
     orders?: OrderItem[];
     pages?: number;
     records?: PostVO[];
+    searchCount?: boolean;
+    size?: number;
+    total?: number;
+  };
+
+  type PageRecord_ = {
+    countId?: string;
+    current?: number;
+    maxLimit?: number;
+    optimizeCountSql?: boolean;
+    orders?: OrderItem[];
+    pages?: number;
+    records?: Record[];
     searchCount?: boolean;
     size?: number;
     total?: number;
@@ -306,6 +423,35 @@ declare namespace API {
     updateTime?: string;
     user?: UserVO;
     userId?: number;
+  };
+
+  type Record = {
+    content?: string;
+    createTime?: string;
+    id?: number;
+    isDelete?: number;
+    userId?: number;
+  };
+
+  type RecordAddRequest = {
+    content?: string;
+  };
+
+  type RecordQueryRequest = {
+    current?: number;
+    pageSize?: number;
+    sortField?: string;
+    sortOrder?: string;
+    userId?: number;
+  };
+
+  type RecordVO = {
+    content?: string;
+  };
+
+  type sendEmailUsingGETParams = {
+    content?: string;
+    to?: string;
   };
 
   type uploadFileUsingPOSTParams = {

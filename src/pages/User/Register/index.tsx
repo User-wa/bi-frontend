@@ -3,7 +3,7 @@ import {LoginForm, ProFormText} from '@ant-design/pro-components';
 import {history} from '@umijs/max';
 import {message, Tabs} from 'antd';
 import React, {useState} from 'react';
-import {userRegisterUsingPOST} from "@/services/yubi/userController";
+import {userEmailUsingPOST, userRegisterUsingPOST} from "@/services/yubi/userController";
 // import {PLANET_LINK} from "@/constants";
 import {Link} from "@@/exports";
 
@@ -23,6 +23,10 @@ const Login: React.FC = () => {
           const res = await userRegisterUsingPOST(values);
           if (res.code === 0) {
             const defaultLoginSuccessMessage = '注册成功！';
+            const EmailRequest = {
+              email : values.email
+            }
+            userEmailUsingPOST(EmailRequest);
             message.success(defaultLoginSuccessMessage);
             const urlParams = new URL(window.location.href).searchParams;
             history.push(urlParams.get('redirect') || '/');
@@ -71,6 +75,19 @@ const Login: React.FC = () => {
                   {
                     required: true,
                     message: '账号是必填项！',
+                  },
+                ]}
+              />
+              <ProFormText
+                name="email"
+                fieldProps={{
+                  size: 'large',
+                }}
+                placeholder="请输入你的邮箱"
+                rules={[
+                  {
+                    required: true,
+                    message: '邮箱是必填项！',
                   },
                 ]}
               />

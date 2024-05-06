@@ -5,6 +5,8 @@ import defaultSettings from './defaultSettings';
 import proxy from './proxy';
 import routes from './routes';
 const { REACT_APP_ENV = 'dev' } = process.env;
+// @ts-ignore
+// @ts-ignore
 export default defineConfig({
   /**
    * @name 开启 hash 模式
@@ -113,11 +115,27 @@ export default defineConfig({
    * @description 配置 <head> 中额外的 script
    */
   headScripts: [
+    // {
+    //   src: 'https://bi-1317055661.cos.ap-nanjing.myqcloud.com/index-legacy-CD0DnpB-.js',
+    //   defer: true,
+    // },
     // 解决首次加载时白屏的问题
     {
       src: '/scripts/loading.js',
       async: true,
     },
+// {
+//       src: 'https://bi-1317055661.cos.ap-nanjing.myqcloud.com/index-DCcypd_U.js',
+//       defer: true,
+//     },
+    // {
+    //   src: 'https://bi-1317055661.cos.ap-nanjing.myqcloud.com/index-DLvowSXS.js',
+    //   defer: true,
+    // },
+    // {
+    //   src: 'https://bi-1317055661.cos.ap-nanjing.myqcloud.com/polyfills-legacy-B0aS1X7g.js',
+    //   defer: true,
+    // },
   ],
   //================ pro 插件配置 =================
   presets: ['umi-presets-pro'],
@@ -141,8 +159,12 @@ export default defineConfig({
     //   projectName: 'swagger',
     // },
   ],
+
+
   mfsu: {
     strategy: 'normal',
   },
   requestRecord: {},
+
 });
+
